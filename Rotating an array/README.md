@@ -50,7 +50,7 @@ This visualizer helps you understand how to rotate an array to the right by k st
 3. Start exploring immediately!
 
 ### Option 2: Live Demo
-Visit the live demo at: **[https://cerulean-mooncake-78f68b.netlify.app/](https://rotating-array.netlify.app/)**
+Visit the live demo at: **[https://rotating-array.netlify.app/](https://rotating-array.netlify.app/)**
 
 ## 🎯 How to Use
 
@@ -246,4 +246,5 @@ If you found this project helpful, please give it a star! ⭐
 **Made with ❤️ for the coding community**
 
 *Happy coding and happy learning!* 🚀
+
 
