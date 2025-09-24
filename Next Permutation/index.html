@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Permutation Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: flex;
+            min-height: 600px;
+        }
+
+        .left-panel {
+            width: 40%;
+            padding: 30px;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .right-panel {
+            width: 60%;
+            padding: 30px;
+            background: white;
+        }
+
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-section h3 {
+            color: #495057;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            padding: 8px 16px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .preset-btn:hover {
+            background: #5a6268;
+        }
+
+        .controls {
+            margin-bottom: 25px;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #4facfe;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3d8bfe;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .language-selector {
+            margin-bottom: 25px;
+        }
+
+        .language-tabs {
+            display: flex;
+            background: #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .language-tab {
+            flex: 1;
+            padding: 12px;
+            background: #e9ecef;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .language-tab.active {
+            background: #4facfe;
+            color: white;
+        }
+
+        .visualization-area {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .array-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .array-element {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 3px solid #dee2e6;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #495057;
+            transition: all 0.5s ease;
+            position: relative;
+        }
+
+        .array-element.highlighted {
+            background: #fff3cd;
+            border-color: #ffc107;
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .array-element.pivot {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+        }
+
+        .array-element.swapping {
+            background: #f8d7da;
+            border-color: #dc3545;
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .array-element.reversing {
+            background: #d4edda;
+            border-color: #28a745;
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .index-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: normal;
+        }
+
+        .arrow {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            color: #dc3545;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .arrow.show {
+            opacity: 1;
+        }
+
+        .explanation {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 20px;
+        }
+
+        .explanation h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .explanation p {
+            color: #424242;
+            line-height: 1.6;
+        }
+
+        .code-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .code-header {
+            background: #495057;
+            color: white;
+            padding: 15px;
+            font-weight: 500;
+        }
+
+        .code-content {
+            padding: 20px;
+            background: #2d3748;
+            color: #e2e8f0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        .code-line {
+            margin: 5px 0;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .code-line.highlighted {
+            background: rgba(255, 193, 7, 0.2);
+            border-left: 3px solid #ffc107;
+        }
+
+        .step-indicator {
+            background: #17a2b8;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .left-panel, .right-panel {
+                width: 100%;
+            }
+            
+            .array-container {
+                gap: 10px;
+            }
+            
+            .array-element {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Next Permutation Visualizer</h1>
+            <p>Interactive step-by-step demonstration of the Next Permutation algorithm</p>
+        </div>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="input-section">
+                    <h3>Input Array</h3>
+                    <input type="text" id="arrayInput" class="input-field" placeholder="Enter numbers separated by commas (e.g., 1,2,3)" value="1,2,3">
+                    <div class="preset-buttons">
+                        <button class="preset-btn" onclick="setPreset([1,2,3])">[1,2,3]</button>
+                        <button class="preset-btn" onclick="setPreset([3,2,1])">[3,2,1]</button>
+                        <button class="preset-btn" onclick="setPreset([1,1,5])">[1,1,5]</button>
+                        <button class="preset-btn" onclick="setPreset([1,3,2])">[1,3,2]</button>
+                    </div>
+                </div>
+
+                <div class="language-selector">
+                    <h3>Code Language</h3>
+                    <div class="language-tabs">
+                        <button class="language-tab active" onclick="switchLanguage('python')">Python</button>
+                        <button class="language-tab" onclick="switchLanguage('javascript')">JavaScript</button>
+                        <button class="language-tab" onclick="switchLanguage('java')">Java</button>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <h3>Step Control</h3>
+                    <div class="control-buttons">
+                        <button class="btn btn-primary" id="playBtn" onclick="playAnimation()">▶ Play</button>
+                        <button class="btn btn-secondary" id="pauseBtn" onclick="pauseAnimation()">⏸ Pause</button>
+                        <button class="btn btn-success" onclick="nextStep()">Next Step</button>
+                        <button class="btn btn-warning" onclick="resetAnimation()">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="visualization-area">
+                    <div class="array-container" id="arrayContainer">
+                        <!-- Array elements will be generated here -->
+                    </div>
+                </div>
+
+                <div class="explanation" id="explanation">
+                    <h4>Algorithm Overview</h4>
+                    <p>The Next Permutation algorithm finds the next lexicographically greater permutation of an array. Click "Next Step" to see how it works!</p>
+                </div>
+
+                <div class="code-section">
+                    <div class="code-header">
+                        <span id="codeLanguage">Python</span> Implementation
+                    </div>
+                    <div class="code-content" id="codeContent">
+                        <!-- Code will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentArray = [1, 2, 3];
+        let currentStep = 0;
+        let currentLanguage = 'python';
+        let isPlaying = false;
+        let animationInterval = null;
+        let pivotIndex = -1;
+        let swapIndex = -1;
+
+        const explanations = {
+            0: "Starting with the input array. We'll find the next lexicographically greater permutation.",
+            1: "Step 1: Find the first decreasing element from the right (pivot). We scan from right to left.",
+            2: "Found the pivot! This is the element we need to swap to get a greater permutation.",
+            3: "Step 2: Find the smallest element to the right of the pivot that's greater than the pivot.",
+            4: "Found the swap target! Now we'll swap the pivot with this element.",
+            5: "Swapping the pivot with the target element.",
+            6: "Step 3: Reverse the suffix (everything to the right of the original pivot position).",
+            7: "Reversing the suffix to get the smallest possible arrangement.",
+            8: "Complete! This is the next lexicographically greater permutation."
+        };
+
+        function getCurrentExplanation() {
+            if (currentStep === 0) {
+                return "Starting with the input array. We'll find the next lexicographically greater permutation.";
+            } else if (currentStep === 1) {
+                return "Step 1: Find the first decreasing element from the right (pivot). We scan from right to left.";
+            } else if (currentStep === 2) {
+                if (pivotIndex >= 0) {
+                    return `Found the pivot at index ${pivotIndex} (value ${currentArray[pivotIndex]})! This is the element we need to swap to get a greater permutation.`;
+                } else {
+                    return "No pivot found! The array is in descending order, so we'll just reverse the entire array.";
+                }
+            } else if (currentStep === 3) {
+                return "Step 2: Find the smallest element to the right of the pivot that's greater than the pivot.";
+            } else if (currentStep === 4) {
+                if (pivotIndex >= 0 && swapIndex > pivotIndex) {
+                    return `Found the swap target at index ${swapIndex} (value ${currentArray[swapIndex]})! Now we'll swap the pivot with this element.`;
+                } else {
+                    return "No swap target found! We'll just reverse the suffix.";
+                }
+            } else if (currentStep === 5) {
+                if (pivotIndex >= 0 && swapIndex > pivotIndex) {
+                    return `Swapping elements at indices ${pivotIndex} and ${swapIndex}.`;
+                } else {
+                    return "No swap needed. Moving to reverse step.";
+                }
+            } else if (currentStep === 6) {
+                return "Step 3: Reverse the suffix (everything to the right of the original pivot position).";
+            } else if (currentStep === 7) {
+                return "Reversing the suffix to get the smallest possible arrangement.";
+            } else if (currentStep === 8) {
+                return "Complete! This is the next lexicographically greater permutation.";
+            }
+            return "Algorithm complete!";
+        }
+
+        const codeSnippets = {
+            python: [
+                "class Solution:",
+                "    def nextPermutation(self, nums):",
+                "        i = len(nums) - 2",
+                "        while i >= 0 and nums[i] >= nums[i + 1]:",
+                "            i -= 1",
+                "        if i >= 0:",
+                "            j = len(nums) - 1",
+                "            while nums[j] <= nums[i]:",
+                "                j -= 1",
+                "            nums[i], nums[j] = nums[j], nums[i]",
+                "        nums[i + 1:] = reversed(nums[i + 1:])",
+                "        return nums"
+            ],
+            javascript: [
+                "var nextPermutation = function(nums) {",
+                "    let i = nums.length - 2;",
+                "    while (i >= 0 && nums[i] >= nums[i + 1]) i--;",
+                "    if (i >= 0) {",
+                "        let j = nums.length - 1;",
+                "        while (nums[j] <= nums[i]) j--;",
+                "        [nums[i], nums[j]] = [nums[j], nums[i]];",
+                "    }",
+                "    let left = i + 1, right = nums.length - 1;",
+                "    while (left < right) {",
+                "        [nums[left], nums[right]] = [nums[right], nums[left]];",
+                "        left++;",
+                "        right--;",
+                "    }",
+                "    return nums;",
+                "};"
+            ],
+            java: [
+                "class Solution {",
+                "    public void nextPermutation(int[] nums) {",
+                "        int i = nums.length - 2;",
+                "        while (i >= 0 && nums[i] >= nums[i + 1]) i--;",
+                "        if (i >= 0) {",
+                "            int j = nums.length - 1;",
+                "            while (nums[j] <= nums[i]) j--;",
+                "            int temp = nums[i];",
+                "            nums[i] = nums[j];",
+                "            nums[j] = temp;",
+                "        }",
+                "        reverse(nums, i + 1, nums.length - 1);",
+                "    }",
+                "    ",
+                "    private void reverse(int[] nums, int left, int right) {",
+                "        while (left < right) {",
+                "            int temp = nums[left];",
+                "            nums[left] = nums[right];",
+                "            nums[right] = temp;",
+                "            left++;",
+                "            right--;",
+                "        }",
+                "    }",
+                "}"
+            ]
+        };
+
+        function setPreset(array) {
+            currentArray = [...array];
+            document.getElementById('arrayInput').value = array.join(',');
+            resetAnimation();
+        }
+
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            document.querySelectorAll('.language-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('codeLanguage').textContent = lang.charAt(0).toUpperCase() + lang.slice(1);
+            updateCodeDisplay();
+        }
+
+        function updateArrayDisplay() {
+            const container = document.getElementById('arrayContainer');
+            container.innerHTML = '';
+            
+            currentArray.forEach((value, index) => {
+                const element = document.createElement('div');
+                element.className = 'array-element';
+                element.textContent = value;
+                
+                const indexLabel = document.createElement('div');
+                indexLabel.className = 'index-label';
+                indexLabel.textContent = index;
+                
+                element.appendChild(indexLabel);
+                container.appendChild(element);
+            });
+        }
+
+        function updateCodeDisplay() {
+            const codeContent = document.getElementById('codeContent');
+            const code = codeSnippets[currentLanguage];
+            
+            codeContent.innerHTML = '';
+            code.forEach((line, index) => {
+                const codeLine = document.createElement('div');
+                codeLine.className = 'code-line';
+                codeLine.textContent = line;
+                codeContent.appendChild(codeLine);
+            });
+        }
+
+        function highlightCodeLine(lineIndex) {
+            document.querySelectorAll('.code-line').forEach((line, index) => {
+                line.classList.remove('highlighted');
+                if (index === lineIndex) {
+                    line.classList.add('highlighted');
+                }
+            });
+        }
+
+        function updateExplanation() {
+            const explanation = document.getElementById('explanation');
+            const stepIndicator = document.createElement('div');
+            stepIndicator.className = 'step-indicator';
+            stepIndicator.textContent = `Step ${currentStep + 1}`;
+            
+            explanation.innerHTML = '';
+            explanation.appendChild(stepIndicator);
+            
+            const h4 = document.createElement('h4');
+            h4.textContent = 'Current Step';
+            explanation.appendChild(h4);
+            
+            const p = document.createElement('p');
+            p.textContent = getCurrentExplanation();
+            explanation.appendChild(p);
+        }
+
+        function highlightElements(indices, className) {
+            document.querySelectorAll('.array-element').forEach((element, index) => {
+                element.classList.remove('highlighted', 'pivot', 'swapping', 'reversing');
+                if (indices.includes(index)) {
+                    element.classList.add(className);
+                }
+            });
+        }
+
+        function nextStep() {
+            if (currentStep >= 8) return;
+            
+            currentStep++;
+            
+            switch(currentStep) {
+                case 1:
+                    highlightCodeLine(2);
+                    highlightElements([currentArray.length - 2], 'highlighted');
+                    break;
+                case 2:
+                    highlightCodeLine(3);
+                    // Find pivot
+                    pivotIndex = currentArray.length - 2;
+                    while (pivotIndex >= 0 && currentArray[pivotIndex] >= currentArray[pivotIndex + 1]) {
+                        pivotIndex--;
+                    }
+                    if (pivotIndex >= 0) {
+                        highlightElements([pivotIndex], 'pivot');
+                    } else {
+                        // Array is in descending order, highlight all elements
+                        highlightElements([...Array(currentArray.length).keys()], 'reversing');
+                    }
+                    break;
+                case 3:
+                    highlightCodeLine(6);
+                    break;
+                case 4:
+                    highlightCodeLine(7);
+                    // Find swap target
+                    if (pivotIndex >= 0) {
+                        swapIndex = currentArray.length - 1;
+                        while (swapIndex > pivotIndex && currentArray[swapIndex] <= currentArray[pivotIndex]) {
+                            swapIndex--;
+                        }
+                        if (swapIndex > pivotIndex) {
+                            highlightElements([pivotIndex, swapIndex], 'swapping');
+                        }
+                    }
+                    break;
+                case 5:
+                    highlightCodeLine(8);
+                    // Perform swap
+                    if (pivotIndex >= 0 && swapIndex > pivotIndex) {
+                        [currentArray[pivotIndex], currentArray[swapIndex]] = [currentArray[swapIndex], currentArray[pivotIndex]];
+                        updateArrayDisplay();
+                        highlightElements([pivotIndex, swapIndex], 'swapping');
+                    }
+                    break;
+                case 6:
+                    highlightCodeLine(9);
+                    break;
+                case 7:
+                    highlightCodeLine(9);
+                    // Reverse suffix or entire array
+                    let left, right;
+                    if (pivotIndex >= 0) {
+                        left = pivotIndex + 1;
+                        right = currentArray.length - 1;
+                    } else {
+                        // Reverse entire array
+                        left = 0;
+                        right = currentArray.length - 1;
+                    }
+                    while (left < right) {
+                        [currentArray[left], currentArray[right]] = [currentArray[right], currentArray[left]];
+                        left++;
+                        right--;
+                    }
+                    updateArrayDisplay();
+                    highlightElements([], 'reversing');
+                    break;
+                case 8:
+                    highlightElements([], '');
+                    break;
+            }
+            
+            updateExplanation();
+        }
+
+        function playAnimation() {
+            if (isPlaying) return;
+            isPlaying = true;
+            document.getElementById('playBtn').textContent = '⏸ Playing';
+            document.getElementById('playBtn').disabled = true;
+            
+            animationInterval = setInterval(() => {
+                if (currentStep >= 8) {
+                    pauseAnimation();
+                    return;
+                }
+                nextStep();
+            }, 2000);
+        }
+
+        function pauseAnimation() {
+            isPlaying = false;
+            clearInterval(animationInterval);
+            document.getElementById('playBtn').textContent = '▶ Play';
+            document.getElementById('playBtn').disabled = false;
+        }
+
+        function resetAnimation() {
+            pauseAnimation();
+            currentStep = 0;
+            pivotIndex = -1;
+            swapIndex = -1;
+            updateArrayDisplay();
+            updateExplanation();
+            highlightElements([], '');
+            highlightCodeLine(-1);
+        }
+
+        function parseArrayInput() {
+            const input = document.getElementById('arrayInput').value;
+            const numbers = input.split(',').map(n => parseInt(n.trim())).filter(n => !isNaN(n));
+            if (numbers.length > 0) {
+                currentArray = numbers;
+                resetAnimation();
+            }
+        }
+
+        // Initialize
+        document.getElementById('arrayInput').addEventListener('change', parseArrayInput);
+        updateArrayDisplay();
+        updateCodeDisplay();
+        updateExplanation();
+    </script>
+</body>
+</html>
