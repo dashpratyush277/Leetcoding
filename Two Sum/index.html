@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Sum Visualizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .controls-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            height: fit-content;
+        }
+
+        .visualization-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            min-height: 500px;
+        }
+
+        .explanation-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .btn-warning {
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #dd6b20;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .control-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .algorithm-selector {
+            margin-bottom: 20px;
+        }
+
+        .algorithm-tabs {
+            display: flex;
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 15px;
+        }
+
+        .algorithm-tab {
+            flex: 1;
+            padding: 8px 12px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .algorithm-tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .algorithm-tab:not(.active):hover {
+            background: #e2e8f0;
+        }
+
+        .code-tabs {
+            display: flex;
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 15px;
+        }
+
+        .code-tab {
+            flex: 1;
+            padding: 8px 12px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .code-tab.active {
+            background: #48bb78;
+            color: white;
+        }
+
+        .code-tab:not(.active):hover {
+            background: #e2e8f0;
+        }
+
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+        }
+
+        .array-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .array-element {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 10px;
+            min-width: 60px;
+            transition: all 0.5s ease;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .array-element.moving {
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .array-element.highlighted {
+            border-color: #667eea;
+            background: #ebf4ff;
+        }
+
+        .array-element.active {
+            border-color: #48bb78;
+            background: #f0fff4;
+        }
+
+        .array-element.visited {
+            border-color: #ed8936;
+            background: #fffaf0;
+        }
+
+        .array-element.found {
+            border-color: #f56565;
+            background: #fed7d7;
+        }
+
+        .element-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .element-index {
+            font-size: 12px;
+            color: #718096;
+            font-weight: 600;
+        }
+
+        .arrow {
+            position: absolute;
+            color: #667eea;
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 5;
+            transition: all 0.5s ease;
+        }
+
+        .step-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f7fafc;
+            border-radius: 8px;
+        }
+
+        .step-counter {
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .explanation-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #4a5568;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .complexity-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .complexity-card {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .complexity-card h4 {
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .complexity-card .big-o {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .hashmap-container {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .hashmap-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4a5568;
+        }
+
+        .hashmap-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .hashmap-key {
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .hashmap-value {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .target-display {
+            background: #f0fff4;
+            border: 2px solid #48bb78;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .target-display h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .target-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #48bb78;
+        }
+
+        .code-explanation {
+            background: #f0f8ff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .code-explanation h4 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .code-explanation ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .code-explanation li {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .code-explanation code {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #2d3748;
+        }
+
+        .code-explanation p {
+            margin: 10px 0;
+        }
+
+        .code-explanation strong {
+            color: #4a5568;
+        }
+
+        .keyboard-hint {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .preset-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Two Sum Visualizer</h1>
+            <p>Find two numbers that add up to a target! Watch how different algorithms solve this classic problem with interactive visualizations.</p>
+        </div>
+
+        <div class="main-content">
+            <div class="controls-panel">
+                <div class="section-title">🎮 Controls</div>
+                
+                <div class="input-group">
+                    <label for="arrayInput">Array (comma-separated numbers):</label>
+                    <textarea id="arrayInput" rows="3" placeholder="2,7,11,15">2,7,11,15</textarea>
+                </div>
+
+                <div class="input-group">
+                    <label for="targetInput">Target sum:</label>
+                    <input type="number" id="targetInput" value="9" placeholder="9">
+                </div>
+
+                <div class="preset-buttons">
+                    <button class="btn btn-primary" onclick="loadExample1()">Example 1</button>
+                    <button class="btn btn-primary" onclick="loadExample2()">Example 2</button>
+                    <button class="btn btn-primary" onclick="loadExample3()">Example 3</button>
+                    <button class="btn btn-secondary" onclick="generateRandom()">Random</button>
+                    <button class="btn btn-warning" onclick="resetArray()">Reset</button>
+                </div>
+
+                <div class="algorithm-selector">
+                    <div class="section-title">🔧 Algorithm</div>
+                    <div class="algorithm-tabs">
+                        <div class="algorithm-tab active" data-algorithm="bruteforce">Brute Force</div>
+                        <div class="algorithm-tab" data-algorithm="hashmap">Hash Map</div>
+                    </div>
+                </div>
+
+                <div class="control-buttons">
+                    <button class="btn btn-success" id="playBtn" onclick="togglePlay()">▶️ Play</button>
+                    <button class="btn btn-secondary" id="stepBtn" onclick="stepForward()">⏭️ Step</button>
+                    <button class="btn btn-secondary" onclick="stepBack()">⏮️ Back</button>
+                    <button class="btn btn-danger" onclick="resetVisualization()">🔄 Reset</button>
+                </div>
+
+                <div class="speed-control">
+                    <label>Speed:</label>
+                    <input type="range" id="speedSlider" class="slider" min="1" max="5" value="3">
+                    <span id="speedLabel">Normal</span>
+                </div>
+
+                <div class="keyboard-hint">
+                    ⌨️ Space: Play/Pause | ← →: Step | R: Reset
+                </div>
+            </div>
+
+            <div class="visualization-panel">
+                <div class="section-title">👀 Visualization</div>
+                
+                <div class="target-display">
+                    <h3>🎯 Target Sum</h3>
+                    <div class="target-value" id="targetValue">9</div>
+                </div>
+                
+                <div class="step-info">
+                    <div class="step-counter">Step: <span id="currentStep">0</span> / <span id="totalSteps">0</span></div>
+                    <div id="algorithmName">Brute Force Method</div>
+                </div>
+
+                <div class="array-container" id="arrayContainer">
+                    <!-- Array elements will be generated here -->
+                </div>
+
+                <div class="hashmap-container" id="hashmapContainer" style="display: none;">
+                    <div class="hashmap-title">🗂️ Hash Map</div>
+                    <div id="hashmapEntries">
+                        <!-- Hash map entries will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="explanation-panel">
+            <div class="section-title">💡 Explanation</div>
+            <div class="explanation-text" id="explanationText">
+                Welcome! Choose an array and target, then hit Play to see how we find two numbers that add up to your target.
+            </div>
+
+            <div class="code-tabs">
+                <div class="code-tab active" data-lang="python">Python</div>
+                <div class="code-tab" data-lang="javascript">JavaScript</div>
+                <div class="code-tab" data-lang="java">Java</div>
+            </div>
+
+            <div class="code-block" id="codeBlock">
+                # Brute Force Method - The "Check Everything" Approach
+def twoSum(nums, target):
+    n = len(nums)           # Get array length
+    
+    # Check every pair of numbers
+    for i in range(n):
+        for j in range(i + 1, n):
+            if nums[i] + nums[j] == target:
+                return [i, j]  # Found the pair!
+    
+    return []  # No solution found
+            </div>
+
+            <div class="code-explanation" id="codeExplanation">
+                <h4>🔍 What's Happening Here?</h4>
+                <div id="explanationContent">
+                    <p><strong>Python Line by line breakdown:</strong></p>
+                    <ul>
+                        <li><code>n = len(nums)</code> - "How many items are in our array?"</li>
+                        <li><code>for i in range(n)</code> - "Look at each number as the first number"</li>
+                        <li><code>for j in range(i + 1, n)</code> - "Look at each remaining number as the second"</li>
+                        <li><code>if nums[i] + nums[j] == target</code> - "Do these two numbers add up to our target?"</li>
+                        <li><code>return [i, j]</code> - "Yes! Return their positions"</li>
+                    </ul>
+                    <p><strong>Think of it like:</strong> Checking every possible pair of people to see if their ages add up to a specific number!</p>
+                </div>
+            </div>
+
+            <div class="complexity-info">
+                <div class="complexity-card">
+                    <h4>⏱️ Time Complexity</h4>
+                    <div class="big-o" id="timeComplexity">O(n²)</div>
+                </div>
+                <div class="complexity-card">
+                    <h4>💾 Space Complexity</h4>
+                    <div class="big-o" id="spaceComplexity">O(1)</div>
+                </div>
+                <div class="complexity-card">
+                    <h4>✨ Pros</h4>
+                    <div id="pros">Simple to understand, no extra space</div>
+                </div>
+                <div class="complexity-card">
+                    <h4>⚠️ Cons</h4>
+                    <div id="cons">Slow for large arrays</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentArray = [2, 7, 11, 15];
+        let target = 9;
+        let currentAlgorithm = 'bruteforce';
+        let currentStep = 0;
+        let totalSteps = 0;
+        let isPlaying = false;
+        let playInterval = null;
+        let speed = 3;
+        let steps = [];
+        let currentStepIndex = 0;
+        let hashmap = {};
+
+        // Algorithm implementations
+        const algorithms = {
+            bruteforce: {
+                name: 'Brute Force Method',
+                timeComplexity: 'O(n²)',
+                spaceComplexity: 'O(1)',
+                pros: 'Simple to understand, no extra space',
+                cons: 'Slow for large arrays',
+                python: `# Brute Force Method - The "Check Everything" Approach
+def twoSum(nums, target):
+    n = len(nums)           # Get array length
+    
+    # Check every pair of numbers
+    for i in range(n):
+        for j in range(i + 1, n):
+            if nums[i] + nums[j] == target:
+                return [i, j]  # Found the pair!
+    
+    return []  # No solution found`,
+                javascript: `// Brute Force Method - The "Check Everything" Approach
+function twoSum(nums, target) {
+    const n = nums.length;     // Get array length
+    
+    // Check every pair of numbers
+    for (let i = 0; i < n; i++) {
+        for (let j = i + 1; j < n; j++) {
+            if (nums[i] + nums[j] === target) {
+                return [i, j];  // Found the pair!
+            }
+        }
+    }
+    
+    return [];  // No solution found
+}`,
+                java: `// Brute Force Method - The "Check Everything" Approach
+public int[] twoSum(int[] nums, int target) {
+    int n = nums.length;        // Get array length
+    
+    // Check every pair of numbers
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (nums[i] + nums[j] == target) {
+                return new int[]{i, j};  // Found the pair!
+            }
+        }
+    }
+    
+    return new int[0];  // No solution found
+}`,
+                explanations: {
+                    python: `<p><strong>Python Line by line breakdown:</strong></p>
+                        <ul>
+                            <li><code>n = len(nums)</code> - "How many items are in our array?"</li>
+                            <li><code>for i in range(n)</code> - "Look at each number as the first number"</li>
+                            <li><code>for j in range(i + 1, n)</code> - "Look at each remaining number as the second"</li>
+                            <li><code>if nums[i] + nums[j] == target</code> - "Do these two numbers add up to our target?"</li>
+                            <li><code>return [i, j]</code> - "Yes! Return their positions"</li>
+                        </ul>
+                        <p><strong>Think of it like:</strong> Checking every possible pair of people to see if their ages add up to a specific number!</p>`,
+                    javascript: `<p><strong>JavaScript Line by line breakdown:</strong></p>
+                        <ul>
+                            <li><code>const n = nums.length</code> - "How many items are in our array?"</li>
+                            <li><code>for (let i = 0; i < n; i++)</code> - "Look at each number as the first number"</li>
+                            <li><code>for (let j = i + 1; j < n; j++)</code> - "Look at each remaining number as the second"</li>
+                            <li><code>if (nums[i] + nums[j] === target)</code> - "Do these two numbers add up to our target?"</li>
+                            <li><code>return [i, j]</code> - "Yes! Return their positions"</li>
+                        </ul>
+                        <p><strong>Think of it like:</strong> Checking every possible pair of people to see if their ages add up to a specific number!</p>`,
+                    java: `<p><strong>Java Line by line breakdown:</strong></p>
+                        <ul>
+                            <li><code>int n = nums.length</code> - "How many items are in our array?"</li>
+                            <li><code>for (int i = 0; i < n; i++)</code> - "Look at each number as the first number"</li>
+                            <li><code>for (int j = i + 1; j < n; j++)</code> - "Look at each remaining number as the second"</li>
+                            <li><code>if (nums[i] + nums[j] == target)</code> - "Do these two numbers add up to our target?"</li>
+                            <li><code>return new int[]{i, j}</code> - "Yes! Return their positions"</li>
+                        </ul>
+                        <p><strong>Think of it like:</strong> Checking every possible pair of people to see if their ages add up to a specific number!</p>`
+                },
+                generateSteps: (arr, target) => {
+                    const steps = [];
+                    const n = arr.length;
+                    
+                    steps.push({
+                        type: 'init',
+                        message: `Starting with array [${arr.join(',')}] and target ${target}. We'll check every possible pair of numbers.`,
+                        array: [...arr],
+                        target: target
+                    });
+                    
+                    for (let i = 0; i < n; i++) {
+                        for (let j = i + 1; j < n; j++) {
+                            const sum = arr[i] + arr[j];
+                            const found = sum === target;
+                            
+                            steps.push({
+                                type: 'check',
+                                message: `Checking nums[${i}] + nums[${j}] = ${arr[i]} + ${arr[j]} = ${sum}. ${found ? 'Found it!' : 'Not our target.'}`,
+                                array: [...arr],
+                                target: target,
+                                i: i,
+                                j: j,
+                                sum: sum,
+                                found: found
+                            });
+                            
+                            if (found) {
+                                return steps;
+                            }
+                        }
+                    }
+                    
+                    steps.push({
+                        type: 'notfound',
+                        message: `No two numbers add up to ${target}.`,
+                        array: [...arr],
+                        target: target
+                    });
+                    
+                    return steps;
+                }
+            },
+            
+            hashmap: {
+                name: 'Hash Map Method',
+                timeComplexity: 'O(n)',
+                spaceComplexity: 'O(n)',
+                pros: 'Fast, single pass through array',
+                cons: 'Uses extra space for hash map',
+                python: `# Hash Map Method - The "Smart Lookup" Approach
+def twoSum(nums, target):
+    hashmap = {}           # Store numbers we've seen
+    
+    for i, num in enumerate(nums):
+        complement = target - num  # What number do we need?
+        
+        if complement in hashmap:
+            return [hashmap[complement], i]  # Found the pair!
+        
+        hashmap[num] = i    # Remember this number and its position
+    
+    return []  # No solution found`,
+                javascript: `// Hash Map Method - The "Smart Lookup" Approach
+function twoSum(nums, target) {
+    const hashmap = {};      // Store numbers we've seen
+    
+    for (let i = 0; i < nums.length; i++) {
+        const num = nums[i];
+        const complement = target - num;  // What number do we need?
+        
+        if (complement in hashmap) {
+            return [hashmap[complement], i];  // Found the pair!
+        }
+        
+        hashmap[num] = i;    // Remember this number and its position
+    }
+    
+    return [];  // No solution found
+}`,
+                java: `// Hash Map Method - The "Smart Lookup" Approach
+public int[] twoSum(int[] nums, int target) {
+    Map<Integer, Integer> hashmap = new HashMap<>();  // Store numbers we've seen
+    
+    for (int i = 0; i < nums.length; i++) {
+        int num = nums[i];
+        int complement = target - num;  // What number do we need?
+        
+        if (hashmap.containsKey(complement)) {
+            return new int[]{hashmap.get(complement), i};  // Found the pair!
+        }
+        
+        hashmap.put(num, i);  // Remember this number and its position
+    }
+    
+    return new int[0];  // No solution found
+}`,
+                explanations: {
+                    python: `<p><strong>Python Line by line breakdown:</strong></p>
+                        <ul>
+                            <li><code>hashmap = {}</code> - "Create a dictionary to remember numbers we've seen"</li>
+                            <li><code>for i, num in enumerate(nums)</code> - "Look at each number and its position"</li>
+                            <li><code>complement = target - num</code> - "What number do we need to reach our target?"</li>
+                            <li><code>if complement in hashmap</code> - "Have we seen this number before?"</li>
+                            <li><code>return [hashmap[complement], i]</code> - "Yes! Return both positions"</li>
+                            <li><code>hashmap[num] = i</code> - "Remember this number and where we saw it"</li>
+                        </ul>
+                        <p><strong>Think of it like:</strong> Keeping a list of people you've met and their phone numbers, so you can quickly find someone when you need them!</p>`,
+                    javascript: `<p><strong>JavaScript Line by line breakdown:</strong></p>
+                        <ul>
+                            <li><code>const hashmap = {}</code> - "Create an object to remember numbers we've seen"</li>
+                            <li><code>for (let i = 0; i < nums.length; i++)</code> - "Look at each number and its position"</li>
+                            <li><code>const complement = target - num</code> - "What number do we need to reach our target?"</li>
+                            <li><code>if (complement in hashmap)</code> - "Have we seen this number before?"</li>
+                            <li><code>return [hashmap[complement], i]</code> - "Yes! Return both positions"</li>
+                            <li><code>hashmap[num] = i</code> - "Remember this number and where we saw it"</li>
+                        </ul>
+                        <p><strong>Think of it like:</strong> Keeping a list of people you've met and their phone numbers, so you can quickly find someone when you need them!</p>`,
+                    java: `<p><strong>Java Line by line breakdown:</strong></p>
+                        <ul>
+                            <li><code>Map&lt;Integer, Integer&gt; hashmap = new HashMap&lt;&gt;()</code> - "Create a map to remember numbers we've seen"</li>
+                            <li><code>for (int i = 0; i &lt; nums.length; i++)</code> - "Look at each number and its position"</li>
+                            <li><code>int complement = target - num</code> - "What number do we need to reach our target?"</li>
+                            <li><code>if (hashmap.containsKey(complement))</code> - "Have we seen this number before?"</li>
+                            <li><code>return new int[]{hashmap.get(complement), i}</code> - "Yes! Return both positions"</li>
+                            <li><code>hashmap.put(num, i)</code> - "Remember this number and where we saw it"</li>
+                        </ul>
+                        <p><strong>Think of it like:</strong> Keeping a list of people you've met and their phone numbers, so you can quickly find someone when you need them!</p>`
+                },
+                generateSteps: (arr, target) => {
+                    const steps = [];
+                    const hashmap = {};
+                    
+                    steps.push({
+                        type: 'init',
+                        message: `Starting with array [${arr.join(',')}] and target ${target}. We'll use a hash map to remember numbers we've seen.`,
+                        array: [...arr],
+                        target: target,
+                        hashmap: {...hashmap}
+                    });
+                    
+                    for (let i = 0; i < arr.length; i++) {
+                        const num = arr[i];
+                        const complement = target - num;
+                        
+                        steps.push({
+                            type: 'check_complement',
+                            message: `Looking at nums[${i}] = ${num}. We need ${complement} to reach target ${target}.`,
+                            array: [...arr],
+                            target: target,
+                            currentIndex: i,
+                            currentNum: num,
+                            complement: complement,
+                            hashmap: {...hashmap}
+                        });
+                        
+                        if (complement in hashmap) {
+                            steps.push({
+                                type: 'found',
+                                message: `Found ${complement} in hash map at index ${hashmap[complement]}! Solution: [${hashmap[complement]}, ${i}]`,
+                                array: [...arr],
+                                target: target,
+                                foundIndices: [hashmap[complement], i],
+                                hashmap: {...hashmap}
+                            });
+                            return steps;
+                        }
+                        
+                        hashmap[num] = i;
+                        
+                        steps.push({
+                            type: 'add_to_hashmap',
+                            message: `Adding ${num} to hash map at index ${i}. Hash map now: ${JSON.stringify(hashmap)}`,
+                            array: [...arr],
+                            target: target,
+                            currentIndex: i,
+                            currentNum: num,
+                            hashmap: {...hashmap}
+                        });
+                    }
+                    
+                    steps.push({
+                        type: 'notfound',
+                        message: `No two numbers add up to ${target}.`,
+                        array: [...arr],
+                        target: target,
+                        hashmap: {...hashmap}
+                    });
+                    
+                    return steps;
+                }
+            }
+        };
+
+        // Initialize the app
+        function init() {
+            updateArrayDisplay();
+            updateControls();
+            setupEventListeners();
+            generateSteps();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Array input
+            document.getElementById('arrayInput').addEventListener('input', function() {
+                try {
+                    const input = this.value.trim();
+                    if (input) {
+                        currentArray = input.split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+                        if (currentArray.length === 0) {
+                            currentArray = [2, 7, 11, 15];
+                        }
+                        updateArrayDisplay();
+                        generateSteps();
+                    }
+                } catch (e) {
+                    console.error('Invalid array input:', e);
+                }
+            });
+
+            // Target input
+            document.getElementById('targetInput').addEventListener('input', function() {
+                target = parseInt(this.value) || 0;
+                document.getElementById('targetValue').textContent = target;
+                generateSteps();
+            });
+
+            // Algorithm tabs
+            document.querySelectorAll('.algorithm-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.algorithm-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentAlgorithm = this.dataset.algorithm;
+                    updateAlgorithmInfo();
+                    generateSteps();
+                });
+            });
+
+            // Code tabs
+            document.querySelectorAll('.code-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    updateCodeBlock();
+                });
+            });
+
+            // Speed control
+            document.getElementById('speedSlider').addEventListener('input', function() {
+                speed = parseInt(this.value);
+                const labels = ['Very Slow', 'Slow', 'Normal', 'Fast', 'Very Fast'];
+                document.getElementById('speedLabel').textContent = labels[speed - 1];
+                if (playInterval) {
+                    clearInterval(playInterval);
+                    startPlaying();
+                }
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    togglePlay();
+                } else if (e.code === 'ArrowRight') {
+                    e.preventDefault();
+                    stepForward();
+                } else if (e.code === 'ArrowLeft') {
+                    e.preventDefault();
+                    stepBack();
+                } else if (e.code === 'KeyR') {
+                    e.preventDefault();
+                    resetVisualization();
+                }
+            });
+        }
+
+        // Update array display
+        function updateArrayDisplay() {
+            const container = document.getElementById('arrayContainer');
+            container.innerHTML = '';
+            
+            currentArray.forEach((value, index) => {
+                const element = document.createElement('div');
+                element.className = 'array-element';
+                element.innerHTML = `
+                    <div class="element-value">${value}</div>
+                    <div class="element-index">${index}</div>
+                `;
+                element.dataset.index = index;
+                element.dataset.value = value;
+                container.appendChild(element);
+            });
+        }
+
+        // Update controls
+        function updateControls() {
+            document.getElementById('arrayInput').value = currentArray.join(',');
+            document.getElementById('targetInput').value = target;
+            document.getElementById('targetValue').textContent = target;
+        }
+
+        // Update algorithm info
+        function updateAlgorithmInfo() {
+            const algo = algorithms[currentAlgorithm];
+            document.getElementById('algorithmName').textContent = algo.name;
+            document.getElementById('timeComplexity').textContent = algo.timeComplexity;
+            document.getElementById('spaceComplexity').textContent = algo.spaceComplexity;
+            document.getElementById('pros').textContent = algo.pros;
+            document.getElementById('cons').textContent = algo.cons;
+            updateCodeBlock();
+            
+            // Show/hide hashmap container
+            const hashmapContainer = document.getElementById('hashmapContainer');
+            if (currentAlgorithm === 'hashmap') {
+                hashmapContainer.style.display = 'block';
+            } else {
+                hashmapContainer.style.display = 'none';
+            }
+        }
+
+        // Update code block
+        function updateCodeBlock() {
+            const algo = algorithms[currentAlgorithm];
+            const activeLang = document.querySelector('.code-tab.active').dataset.lang;
+            document.getElementById('codeBlock').textContent = algo[activeLang];
+            document.getElementById('explanationContent').innerHTML = algo.explanations[activeLang];
+        }
+
+        // Generate steps for current algorithm
+        function generateSteps() {
+            steps = algorithms[currentAlgorithm].generateSteps(currentArray, target);
+            totalSteps = steps.length;
+            currentStepIndex = 0;
+            document.getElementById('totalSteps').textContent = totalSteps;
+            document.getElementById('currentStep').textContent = currentStepIndex;
+            
+            if (steps.length > 0) {
+                updateExplanation(steps[0].message);
+            }
+        }
+
+        // Update explanation
+        function updateExplanation(message) {
+            document.getElementById('explanationText').textContent = message;
+        }
+
+        // Visualize current step
+        function visualizeStep(step) {
+            const elements = document.querySelectorAll('.array-element');
+            
+            // Clear all highlights
+            elements.forEach(el => {
+                el.classList.remove('highlighted', 'active', 'visited', 'found', 'moving');
+            });
+            
+            // Remove existing arrows
+            document.querySelectorAll('.arrow').forEach(arrow => arrow.remove());
+            
+            if (step.type === 'check') {
+                // Highlight the two elements being checked
+                elements[step.i].classList.add('highlighted');
+                elements[step.j].classList.add('active');
+                
+                if (step.found) {
+                    elements[step.i].classList.add('found');
+                    elements[step.j].classList.add('found');
+                }
+                
+            } else if (step.type === 'check_complement') {
+                // Highlight current element
+                elements[step.currentIndex].classList.add('active');
+                
+            } else if (step.type === 'found') {
+                // Highlight found elements
+                elements[step.foundIndices[0]].classList.add('found');
+                elements[step.foundIndices[1]].classList.add('found');
+            }
+            
+            // Update hashmap display
+            if (step.hashmap) {
+                updateHashmapDisplay(step.hashmap);
+            }
+        }
+
+        // Update hashmap display
+        function updateHashmapDisplay(hashmap) {
+            const container = document.getElementById('hashmapEntries');
+            container.innerHTML = '';
+            
+            Object.entries(hashmap).forEach(([key, value]) => {
+                const entry = document.createElement('div');
+                entry.className = 'hashmap-entry';
+                entry.innerHTML = `
+                    <span class="hashmap-key">${key}</span>
+                    <span class="hashmap-value">→ Index ${value}</span>
+                `;
+                container.appendChild(entry);
+            });
+        }
+
+        // Step forward
+        function stepForward() {
+            if (currentStepIndex < steps.length - 1) {
+                currentStepIndex++;
+                const step = steps[currentStepIndex];
+                visualizeStep(step);
+                updateExplanation(step.message);
+                document.getElementById('currentStep').textContent = currentStepIndex + 1;
+            }
+        }
+
+        // Step backward
+        function stepBack() {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                const step = steps[currentStepIndex];
+                visualizeStep(step);
+                updateExplanation(step.message);
+                document.getElementById('currentStep').textContent = currentStepIndex + 1;
+            }
+        }
+
+        // Toggle play/pause
+        function togglePlay() {
+            if (isPlaying) {
+                pausePlaying();
+            } else {
+                startPlaying();
+            }
+        }
+
+        // Start playing
+        function startPlaying() {
+            isPlaying = true;
+            document.getElementById('playBtn').textContent = '⏸️ Pause';
+            
+            const speeds = [2000, 1500, 1000, 500, 250];
+            playInterval = setInterval(() => {
+                if (currentStepIndex < steps.length - 1) {
+                    stepForward();
+                } else {
+                    pausePlaying();
+                }
+            }, speeds[speed - 1]);
+        }
+
+        // Pause playing
+        function pausePlaying() {
+            isPlaying = false;
+            document.getElementById('playBtn').textContent = '▶️ Play';
+            if (playInterval) {
+                clearInterval(playInterval);
+                playInterval = null;
+            }
+        }
+
+        // Reset visualization
+        function resetVisualization() {
+            pausePlaying();
+            currentStepIndex = 0;
+            updateArrayDisplay();
+            generateSteps();
+            
+            // Clear highlights
+            document.querySelectorAll('.array-element').forEach(el => {
+                el.classList.remove('highlighted', 'active', 'visited', 'found', 'moving');
+            });
+            document.querySelectorAll('.arrow').forEach(arrow => arrow.remove());
+            
+            // Clear hashmap
+            document.getElementById('hashmapEntries').innerHTML = '';
+        }
+
+        // Preset functions
+        function loadExample1() {
+            currentArray = [2, 7, 11, 15];
+            target = 9;
+            updateControls();
+            generateSteps();
+            resetVisualization();
+        }
+
+        function loadExample2() {
+            currentArray = [3, 2, 4];
+            target = 6;
+            updateControls();
+            generateSteps();
+            resetVisualization();
+        }
+
+        function loadExample3() {
+            currentArray = [3, 3];
+            target = 6;
+            updateControls();
+            generateSteps();
+            resetVisualization();
+        }
+
+        function generateRandom() {
+            const length = Math.floor(Math.random() * 8) + 3; // 3-10 elements
+            currentArray = Array.from({length}, () => Math.floor(Math.random() * 20) - 10);
+            target = Math.floor(Math.random() * 20) - 10;
+            updateControls();
+            generateSteps();
+            resetVisualization();
+        }
+
+        function resetArray() {
+            currentArray = [2, 7, 11, 15];
+            target = 9;
+            updateControls();
+            generateSteps();
+            resetVisualization();
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
